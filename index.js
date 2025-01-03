@@ -10,6 +10,11 @@ const userRouter = require("./routes/user");
 console.log("env", process.env.DB_PASSWORD);
 const jwt = require("jsonwebtoken");
 const authRouter = require("./routes/auth");
+const fs = require("fs");
+const publicKey = fs.readFileSync(
+  path.resolve(__dirname, "./public.key"),
+  "utf-8"
+);
 
 //db connection
 main().catch((err) => console.log(err));
@@ -25,7 +30,7 @@ const auth = (req, res, next) => {
   const token = req.get("Authorization").split("Bearer ")[1];
   console.log(token);
   try {
-    var decoded = jwt.verify(token, process.env.SECRET);
+    var decoded = jwt.verify(token, publicKey);
     console.log(decoded);
     if (decoded.email) {
       next();
